@@ -31,6 +31,7 @@ endfunction
 inoremap jk <ESC>
 let mapleader = "\<Space>"
 filetype plugin indent on
+let python_highlight_all=1
 syntax on
 set encoding=utf-8
 
@@ -51,3 +52,47 @@ let g:syntastic_quiet_messages = { "type": "style" }
 
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
+
+" Enable folding
+set foldmethod=indent
+set foldlevel=99
+
+" Enable folding with the spacebar
+nnoremap <space> za
+
+" Colon as semi-colon
+nnoremap : ;
+nnoremap ; :
+
+" Disable annoying beeping
+set noerrorbells
+set vb t_vb=
+
+" Show docstring with folding
+let g:SimpylFold_docstring_preview=1
+
+" PEP8 Indentation
+au BufNewFile,BufRead *.py : 
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set textwidth=79 |
+    \ set expandtab |
+    \ set autoindent |
+    \ set fileformat=unix |
+
+au BufNewFile,BufRead *.js,*.html,*.css :
+    \ set tabstop=2 |
+    \ set softtabstop=2 |
+    \ set shiftwidth=2 |
+
+" Color scheme
+if has('gui_running')
+  set background=dark
+  colorscheme solarized
+else
+  colorscheme zenburn
+endif
+
+" Line numbering
+set nu
