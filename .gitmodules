@@ -28,9 +28,6 @@
 [submodule "bundle/notes"]
 	path = bundle/notes
 	url = https://github.com/xolox/vim-notes
-[submodule "bundle/jedi-vim"]
-	path = bundle/jedi-vim
-	url = https://github.com/davidhalter/jedi-vim.git
 [submodule "bundle/misc"]
 	path = bundle/misc
 	url = https://github.com/xolox/vim-misc
