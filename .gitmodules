@@ -34,3 +34,6 @@
 [submodule "bundle/YouCompleteMe"]
 	path = bundle/YouCompleteMe
 	url = https://github.com/Valloric/YouCompleteMe
+[submodule "bundle/vim-auto-save"]
+	path = bundle/vim-auto-save
+	url = https://github.com/vim-scripts/vim-auto-save
