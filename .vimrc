@@ -236,12 +236,23 @@ set relativenumber
 " Lightline
 set laststatus=2
 let g:lightline = {
-			\ 'colorscheme': 'wombat',
-			\ 'component': {
-			\   'readonly': '%{&readonly?"⭤":""}',
-			\ },
-			\ 'separator': { 'left': '⮀', 'right': '⮂' },
-			\ 'subseparator': { 'left': '⮁', 'right': '⮃' }
-			\ }
+	\ 'colorscheme': 'wombat',
+        \ 'active': {
+        \   'left': [ [ 'mode', 'paste' ],
+        \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
+        \ },
+	\ 'component': {
+	\   'readonly': '%{&filetype=="help"?"":&readonly?"":""}',
+	\   'modified': '%{&filetype=="help"?"":&modified?"+":&modifiable?"":"-"}',
+	\   'fugitive': '%{exists("*fugitive#head")?fugitive#head():""}'
+	\ },
+        \ 'component_visible_condition': {
+        \   'readonly': '(&filetype!="help"&& &readonly)',
+        \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
+        \   'fugitive': '(exists("*fugitive#head") && ""!=fugitive#head())'
+        \ },
+	\ 'separator': { 'left': '', 'right': '' },
+	\ 'subseparator': { 'left': '', 'right': '' }
+	\ }
 
 
