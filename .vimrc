@@ -22,10 +22,6 @@ nnoremap <leader>r ]sli<C-x><C-s><C-p>
 nnoremap <C-+> 1z=
 
 " Fugitive plugin
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
-"set statusline=%<%f\ %h%m%r%{fugitive#statusline()}%=%-14.(%l,%c%V%)\ %P
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
@@ -75,14 +71,6 @@ au BufNewFile,BufRead *.js,*.html,*.css :
     \ set softtabstop=2 |
     \ set shiftwidth=2 |
 
-" Color scheme
-if has('gui_running')
-  set background=dark
-  colorscheme solarized
-else
-  colorscheme zenburn
-endif
-
 " Line numbering
 set nu
 
@@ -100,10 +88,10 @@ nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
 
 " Source the vimrc file after saving it
-if has("autocmd")
-  autocmd!
-  autocmd bufwritepost .vimrc source $MYVIMRC
-endif
+"augroup reload_vimrc
+  "autocmd!
+  "autocmd bufwritepost $MYVIMRC nested source $MYVIMRC
+"augroup END
 
 " Open .vimrc quickly
 noremap <leader>v :tabedit $MYVIMRC<CR>
@@ -117,11 +105,6 @@ set history=200
 " Command history scrolling
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
-
-" Run a shell that doesn't suck shit
-"set shell=C:/cygwin/bin/bash
-"set shellcmdflag=-c
-"set shellxquote=\" 
 
 " File expansion
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
@@ -236,7 +219,7 @@ set relativenumber
 " Lightline
 set laststatus=2
 let g:lightline = {
-	\ 'colorscheme': 'wombat',
+	\ 'colorscheme': 'tender',
         \ 'active': {
         \   'left': [ [ 'mode', 'paste' ],
         \             [ 'fugitive', 'readonly', 'filename', 'modified' ] ]
@@ -255,4 +238,12 @@ let g:lightline = {
 	\ 'subseparator': { 'left': '', 'right': '' }
 	\ }
 
+colorscheme tender
+" Color scheme (After Lightline)
+if has('gui_running')
+  colorscheme solarized
+  set background=dark
+else
+  colorscheme tender
+endif
 
