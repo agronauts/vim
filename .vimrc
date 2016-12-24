@@ -57,15 +57,20 @@ set vb t_vb=
 " Show docstring with folding
 let g:SimpylFold_docstring_preview=1
 
-" PEP8 Indentation
-au BufNewFile,BufRead *.py : 
-    \ set tabstop=4 |
-    \ set softtabstop=4 |
-    \ set shiftwidth=4 |
-    "\ set textwidth=79 |
-    \ set expandtab |
-    \ set autoindent |
-    \ set fileformat=unix |
+" Notes.vim syntax highlighting
+au BufNewFile,BufRead *.note :
+    \ set filetype=notes
+
+" Default indentation & PEP8 indentation
+" au BufNewFile,BufRead *.py,*.php : 
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+"\ set textwidth=79 |
+set expandtab 
+set autoindent 
+set fileformat=unix
+
 au BufNewFile,BufRead *.js,*.html,*.css :
     \ set tabstop=2 |
     \ set softtabstop=2 |
@@ -114,6 +119,9 @@ nnoremap k gk
 nnoremap gk k
 nnoremap j gj
 nnoremap gj j
+
+"inoremap <BS> <NOP>
+inoremap <C-Space> <BS>
 
 " Switch without saving buffer
 set hidden
@@ -165,8 +173,8 @@ endfunction
 nnoremap <leader>l :set hlsearch!<CR>
 
 "Footnotes
-nmap <leader>f <Plug>AddVimFootnote 
-nmap <leader>n <Plug>ReturnFromFootnote 
+"nmap <leader>f <Plug>AddVimFootnote 
+"nmap <leader>n <Plug>ReturnFromFootnote 
 
 "Replace last search with input
 nnoremap <F3> :%s///g<left><left>
@@ -178,20 +186,9 @@ set shortmess+=A
 let g:jedi#use_splits_not_buffers = "top"
 let g:jedi#auto_initialization = 0
 
-" Python specific
-function! PyComment()
-	norm! ^
-	if getline(".")[col(".")-1] =~ '#'
-		normal! x
-	else
-		normal! i#
-	endif
-endfunction
-augroup PythonCommenting
-	autocmd!
-	autocmd BufNewFile,BufRead *.py nnoremap <Leader>/ :call PyComment()<CR>
-	autocmd BufNewFile,BufRead *.py vnoremap <Leader>/ :'<,'>call PyComment()<CR>
-augroup END
+" Commenting remapping
+nnoremap <Leader>/ :Commentary<CR>
+vnoremap <Leader>/ :Commentary<CR>
 
 " YCM 
 let g:ycm_python_binary_path = '/usr/bin/python3'
@@ -247,3 +244,33 @@ else
   colorscheme tender
 endif
 
+" vim-Obsession
+augroup sourcesession
+        autocmd!
+        autocmd VimEnter * nested
+        \ if !argc() && empty(v:this_session) && filereadable('Session.vim') |
+        \   source Session.vim |
+        \ endif
+augroup END
+
+" Note
+:let g:notes_suffix = '.note'
+:let g:notes_title_sync = 'no'
+
+" Save folds
+autocmd BufWinLeave *.* mkview
+autocmd BufWinEnter *.* silent loadview 
+
+" Autosave on
+let g:auto_save = 1
+
+" Sets working directory
+:cd %:p:h
+
+" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<c-s>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
