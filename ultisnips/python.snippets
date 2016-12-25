@@ -1,0 +1,24 @@
+snippet docopt
+"""${1:Program name}
+
+Usage:
+  $1 $2 <args>...
+  $1 $2 <pos_arg> [--kward=<val>]
+  $1 $2 (choice1|choice2) <x> <y> [--choice3 | --choice4]
+  $1 (-h | --help)
+  $1 --version
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
+  --choice3     Description 3.
+  --choice4     Description 4.
+
+"""
+from docopt import docopt
+
+$0
+
+if __name__ == '__main__':
+    args = docopt(__doc__, version='$1 v0.1')
+endsnippet
