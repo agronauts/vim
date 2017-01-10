@@ -1,18 +1,32 @@
+" TODO Preserve working directory between buffers
+" TODO Folding format/python
+" TODO Variable highlighting when cursor hovers
+
 " Pathogen
 execute pathogen#infect()
 " Clean autocmds
 autocmd!
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " BASIC EDITING CONFIGURATION
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Ascend to the next generation
 set nocompatible
 " Switch without saving buffer
 set hidden
 " Our holy leader
 let mapleader = "\<Space>"
+" Source when saved
+" if has("autocmd")
+"   autocmd bufwritepost .vimrc source $MYVIMRC
+" endif
 " Keyremapping
-inoremap jk <ESC>
-inoremap <c-Space> <BS> " TODO Not working :'(
+inoremap jk <ESC>l " TODO Causes Jedi to crash
+" Edit vimrc easily
+nnoremap <Leader>v :tabnew $MYVIMRC<CR>
+" inoremap <c-Space> <BS> " TODO Not working :'(
+" Disable showmode
+set noshowmode
 " Filetype specific config
 filetype plugin indent on
 syntax on
@@ -42,13 +56,12 @@ nnoremap gj j
 " Colon as semi-colon
 nnoremap : ;
 nnoremap ; :
-" Tabs
-set tabstop=2
-set softtabstop=2
-set shiftwidth=2
-set expandtab 
-set autoindent 
-set fileformat=unix
+vnoremap : ;
+vnoremap ; :
+ " TODO make this work for readonly files
+" if g:modifiable
+"   set fileformat=unix
+" endif
 " Limit output log
 set pumheight=10
 " Line numbering
@@ -73,8 +86,6 @@ nnoremap <silent> [b :bprevious<CR>
 nnoremap <silent> ]b :bnext<CR>
 nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
-" Open .vimrc quickly
-noremap <leader>v :tabedit $MYVIMRC<CR>
 "Toggle search highlight
 nnoremap <leader>h :set hlsearch!<CR>
 " Normally, Vim messes with iskeyword when you open a shell file. This can
@@ -82,8 +93,11 @@ nnoremap <leader>h :set hlsearch!<CR>
 " variable prevents the iskeyword change so it can't hurt anyone.
 let g:sh_noisk=1
 " System copy/paste
-noremap <c-v> "*p
-noremap <c-c> "*y
+nmap <c-v> "+p
+imap <c-v> <ESC><c-v>
+vmap <c-v> c<c-v>
+vmap <c-c> "+y
+nmap <c-c> V"+y<ESC>
 " Command history scrolling
 cnoremap <c-p> <Up>
 cnoremap <c-n> <Down>
@@ -111,8 +125,14 @@ autocmd BufWinEnter *.* silent loadview
 let g:auto_save = 1
 " Sets working directory to invoked location
 :cd %:p:h
+" Help page fullscreen
+set helpheight=1000
+" Save despite RO status
+cmap w!! w !sudo tee %
+" Better searching
+set incsearch
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" CUSTOM FUNCITONS
+" CUSTOM FUNCTIONS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Search visual selection
 xnoremap * :<c-u>call <SID>VSetSearch()<CR>/<c-R>=@/<CR><CR>
@@ -123,14 +143,17 @@ function! s:VSetSearch()
 	let @/ = '\V' . substitute(escape(@s, '/\'), '\n', '\\n', 'g')
 	let @s = temp
 endfunction
+
 "Shitty summing function; Need to print g:S after running to get sum
 let g:S = 0  "result in global variable S
 function! Sum(number)
   let g:S = g:S + a:number
   return a:number
 endfunction
+
 "Replace last search with input
 nnoremap <F3> :%s///g<left><left>
+
 " Set Quickfix list as args list
 command! -nargs=0 -bar Qargs execute 'args' QuickfixFilenames()
 function! QuickfixFilenames()
@@ -140,6 +163,25 @@ function! QuickfixFilenames()
  endfor
  return join(map(values(buffer_numbers), 'fnameescape(v:val)'))
 endfunction
+
+function! <SID>StripTrailingWhitespaces()
+    " Preparation: save last search, and cursor position.
+    let _s=@/
+    let l = line(".")
+    let c = col(".")
+    " Do the business:
+    %s/\s\+$//e
+    " Clean up: restore previous search history, and cursor position
+    let @/=_s
+    call cursor(l, c)
+endfunction
+autocmd BufLeave *.py,*.js :call <SID>StripTrailingWhitespaces()
+
+nnoremap <Leader>t :!python3 -m doctest %<CR>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" PLUGIN CONFIGURATION
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Lightline
 set laststatus=2
 let g:lightline = {
@@ -161,9 +203,8 @@ let g:lightline = {
 	\ 'separator': { 'left': '', 'right': '' },
 	\ 'subseparator': { 'left': '', 'right': '' }
 	\ }
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" PLUGIN CONFIGURATION
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" NERDtree
+let NERDTreeHijackNetrw=1
 " Syntastic plugin
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
@@ -188,16 +229,31 @@ let g:SimpylFold_docstring_preview=1
 " Commenting remapping
 nnoremap <Leader>/ :Commentary<CR>
 vnoremap <Leader>/ :Commentary<CR>
+" Jedi
+let g:jedi#completions_command = "<C-N>"
+let g:jedi#show_call_signatures = 2
+let g:jedi#show_call_signatures_delay = 0
+let g:jedi#squelch_py_warning = 1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CUSTOM FILTYPES
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Note
 :let g:notes_suffix = '.note'
 :let g:notes_title_sync = 'no'
+
 au BufNewFile,BufRead *.note :
     \ set filetype=notes
+au BufNewFile,BufRead *.py :
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set expandtab |
+    \ set autoindent |
+    \ set formatprg=autopep8\ - |
 au BufNewFile,BufRead *.js,*.html,*.css :
     \ set tabstop=2 |
     \ set softtabstop=2 |
     \ set shiftwidth=2 |
+    \ set expandtab |
+    \ set autoindent |
 au BufRead,BufNewFile *.txt		setfiletype text
