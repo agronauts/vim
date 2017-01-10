@@ -1,3 +1,7 @@
+" TODO Preserve working directory between buffers
+" TODO Folding format/python
+" TODO Variable highlighting whe cursor hovers
+
 " Pathogen
 execute pathogen#infect()
 " Clean autocmds
@@ -13,14 +17,21 @@ set hidden
 let mapleader = "\<Space>"
 " Source when saved
 if has("autocmd")
-  autocmd bufwritepost .vimrc source $MYVIMRC
+  autocmd bufwritepost .vimrc :so $MYVIMRC
 endif
+" When the page starts to scroll, keep the cursor 8 lines from the top and 8 lines from the bottom
+set scrolloff=8
 " Keyremapping
 inoremap jk <ESC>
 inoremap <c-Space> <BS> " TODO Not working :'(
 " Filetype specific config
 filetype plugin indent on
 syntax on
+" Types of files to ignore when autocompleting things
+set wildignore+=*.o,*.class,*.git,*.svn,*.pyc,*.swp,*.un,*~
+" Highlight the current line and column (May cause lag)
+set cursorline
+set cursorcolumn
 " Encoding
 set encoding=utf-8
 " Disable annoying beeping
@@ -49,13 +60,6 @@ nnoremap : ;
 nnoremap ; :
 vnoremap : ;
 vnoremap ; :
-" Default tabs
-set tabstop=2
-set softtabstop=2
-set shiftwidth=2
-set expandtab 
-set autoindent 
-set fileformat=unix
  " TODO make this work for readonly files
 " if g:modifiable
 "   set fileformat=unix
@@ -65,8 +69,10 @@ set pumheight=10
 " Line numbering
 set nu
 set relativenumber
-" Tab completion
-set wildmode=longest,list
+" Tab completion, match longest common string, then cycle through
+set nowildmenu
+set wildmode=list,full
+" set wildmode=longest,list:longest
 " Extend command history
 set history=200
 "Stop .swp already exists messages
@@ -129,6 +135,8 @@ let g:auto_save = 1
 set helpheight=1000
 " Save despite RO status
 cmap w!! w !sudo tee %
+" Better searching
+set incsearch
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CUSTOM FUNCITONS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -170,7 +178,8 @@ function! <SID>StripTrailingWhitespaces()
     let @/=_s
     call cursor(l, c)
 endfunction
-autocmd BufWritePre *.py,*.js :call <SID>StripTrailingWhitespaces()
+autocmd BufLeave *.py,*.js :call <SID>StripTrailingWhitespaces()
+nnoremap <Leader>t :!python3 -m doctest %<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGIN CONFIGURATION
@@ -222,6 +231,11 @@ let g:SimpylFold_docstring_preview=1
 " Commenting remapping
 nnoremap <Leader>/ :Commentary<CR>
 vnoremap <Leader>/ :Commentary<CR>
+" Jedi
+let g:jedi#completions_command = "<C-N>"
+let g:jedi#show_call_signatures = 2
+let g:jedi#show_call_signatures_delay = 0
+let g:jedi#squelch_py_warning = 1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CUSTOM FILTYPES
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -237,6 +251,7 @@ au BufNewFile,BufRead *.py :
     \ set shiftwidth=4 |
     \ set expandtab |
     \ set autoindent |
+    \ set formatprg=autopep8\ - |
 au BufNewFile,BufRead *.js,*.html,*.css :
     \ set tabstop=2 |
     \ set softtabstop=2 |
@@ -244,3 +259,4 @@ au BufNewFile,BufRead *.js,*.html,*.css :
     \ set expandtab |
     \ set autoindent |
 au BufRead,BufNewFile *.txt		setfiletype text
+
