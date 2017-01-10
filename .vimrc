@@ -1,12 +1,7 @@
-" TODO Preserve working directory between buffers
-" TODO Folding format/python
-" TODO Variable highlighting when cursor hovers
-
 " Pathogen
 execute pathogen#infect()
 " Clean autocmds
 autocmd!
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " BASIC EDITING CONFIGURATION
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -17,16 +12,12 @@ set hidden
 " Our holy leader
 let mapleader = "\<Space>"
 " Source when saved
-" if has("autocmd")
-"   autocmd bufwritepost .vimrc source $MYVIMRC
-" endif
+if has("autocmd")
+  autocmd bufwritepost .vimrc source $MYVIMRC
+endif
 " Keyremapping
-inoremap jk <ESC>l " TODO Causes Jedi to crash
-" Edit vimrc easily
-nnoremap <Leader>v :tabnew $MYVIMRC<CR>
-" inoremap <c-Space> <BS> " TODO Not working :'(
-" Disable showmode
-set noshowmode
+inoremap jk <ESC>
+inoremap <c-Space> <BS> " TODO Not working :'(
 " Filetype specific config
 filetype plugin indent on
 syntax on
@@ -44,10 +35,10 @@ set foldlevel=99
 nnoremap <c-+> 1z=
 nnoremap <leader>f za
 " Window switching
-nnoremap <c-h> <c-w>h
-nnoremap <c-j> <c-w>j
-nnoremap <c-k> <c-w>k
-nnoremap <c-l> <c-w>l
+" nnoremap <c-h> <c-w>h
+" nnoremap <c-j> <c-w>j
+" nnoremap <c-k> <c-w>k
+" nnoremap <c-l> <c-w>l
 " Navigate display lines rather than real lines
 nnoremap k gk
 nnoremap gk k
@@ -58,6 +49,13 @@ nnoremap : ;
 nnoremap ; :
 vnoremap : ;
 vnoremap ; :
+" Default tabs
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set expandtab 
+set autoindent 
+set fileformat=unix
  " TODO make this work for readonly files
 " if g:modifiable
 "   set fileformat=unix
@@ -86,6 +84,8 @@ nnoremap <silent> [b :bprevious<CR>
 nnoremap <silent> ]b :bnext<CR>
 nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
+" Open .vimrc quickly
+noremap <leader>v :tabedit $MYVIMRC<CR>
 "Toggle search highlight
 nnoremap <leader>h :set hlsearch!<CR>
 " Normally, Vim messes with iskeyword when you open a shell file. This can
@@ -129,10 +129,8 @@ let g:auto_save = 1
 set helpheight=1000
 " Save despite RO status
 cmap w!! w !sudo tee %
-" Better searching
-set incsearch
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" CUSTOM FUNCTIONS
+" CUSTOM FUNCITONS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Search visual selection
 xnoremap * :<c-u>call <SID>VSetSearch()<CR>/<c-R>=@/<CR><CR>
@@ -143,17 +141,14 @@ function! s:VSetSearch()
 	let @/ = '\V' . substitute(escape(@s, '/\'), '\n', '\\n', 'g')
 	let @s = temp
 endfunction
-
 "Shitty summing function; Need to print g:S after running to get sum
 let g:S = 0  "result in global variable S
 function! Sum(number)
   let g:S = g:S + a:number
   return a:number
 endfunction
-
 "Replace last search with input
 nnoremap <F3> :%s///g<left><left>
-
 " Set Quickfix list as args list
 command! -nargs=0 -bar Qargs execute 'args' QuickfixFilenames()
 function! QuickfixFilenames()
@@ -175,9 +170,7 @@ function! <SID>StripTrailingWhitespaces()
     let @/=_s
     call cursor(l, c)
 endfunction
-autocmd BufLeave *.py,*.js :call <SID>StripTrailingWhitespaces()
-
-nnoremap <Leader>t :!python3 -m doctest %<CR>
+autocmd BufWritePre *.py,*.js :call <SID>StripTrailingWhitespaces()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGIN CONFIGURATION
@@ -229,11 +222,6 @@ let g:SimpylFold_docstring_preview=1
 " Commenting remapping
 nnoremap <Leader>/ :Commentary<CR>
 vnoremap <Leader>/ :Commentary<CR>
-" Jedi
-let g:jedi#completions_command = "<C-N>"
-let g:jedi#show_call_signatures = 2
-let g:jedi#show_call_signatures_delay = 0
-let g:jedi#squelch_py_warning = 1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CUSTOM FILTYPES
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -249,7 +237,6 @@ au BufNewFile,BufRead *.py :
     \ set shiftwidth=4 |
     \ set expandtab |
     \ set autoindent |
-    \ set formatprg=autopep8\ - |
 au BufNewFile,BufRead *.js,*.html,*.css :
     \ set tabstop=2 |
     \ set softtabstop=2 |
