@@ -32,7 +32,7 @@ syntax on
 set wildignore+=*.o,*.class,*.git,*.svn,*.pyc,*.swp,*.un,*~
 " Highlight the current line and column (May cause lag)
 set cursorline
-set cursorcolumn
+" set cursorcolumn " Causes highlighting to not work
 " Encoding
 set encoding=utf-8
 " Disable annoying beeping
@@ -189,9 +189,14 @@ function! <SID>StripTrailingWhitespaces()
 endfunction
 autocmd BufLeave *.py,*.js :call <SID>StripTrailingWhitespaces()
 
+" Preserve whitespace of new lines
 autocmd BufNewFile,BufRead python inoremap <CR> <CR>x<BS>
+
+" Highlight text under cursor
+highlight IncSearch ctermbg=grey guibg=grey term=bold
+autocmd CursorMoved *.py silent! exe printf('match IncSearch /\<%s\>/', expand('<cword>'))
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" PLUGIN CONFIGURATION
+" PLUGIN CONIGURATION
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Lightline
 set laststatus=2
