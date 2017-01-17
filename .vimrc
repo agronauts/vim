@@ -1,6 +1,8 @@
-" TODO Preserve working directory between buffers
 " TODO Folding format/python
 " TODO Variable highlighting whe cursor hovers
+" TODO stop reload file ermsg
+" TODO Nicer error messages
+" TODO Preserve whitespace when made newline
 
 " Pathogen
 execute pathogen#infect()
@@ -137,6 +139,14 @@ set helpheight=1000
 cmap w!! w !sudo tee %
 " Better searching
 set incsearch
+" Tag navigation for python
+set tags=./tags,~/tags
+" Interactive python
+nnoremap <Leader>i :!ptpython -i %<CR>
+" Python tests
+nnoremap <Leader>td :!python3 -m doctest %<CR>
+nnoremap <Leader>tu :!python3 manage.py test %:h<CR>
+nnoremap <Leader>tf :!python3 manage.py test functional_tests<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CUSTOM FUNCITONS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -179,7 +189,6 @@ function! <SID>StripTrailingWhitespaces()
     call cursor(l, c)
 endfunction
 autocmd BufLeave *.py,*.js :call <SID>StripTrailingWhitespaces()
-nnoremap <Leader>t :!python3 -m doctest %<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGIN CONFIGURATION
@@ -217,6 +226,10 @@ let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_
 " CtrlP mapping
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_match_window = 'bottom,order:btt,min:1,max:20'
+let g:ctrlp_clear_cache_on_exit = 0
+let g:ctrlp_cmd = 'CtrlPLastMode'
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-n>"
