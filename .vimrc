@@ -2,7 +2,6 @@
 " TODO Variable highlighting whe cursor hovers
 " TODO stop reload file ermsg
 " TODO Nicer error messages
-" TODO Preserve whitespace when made newline
 
 " Pathogen
 execute pathogen#infect()
@@ -190,6 +189,7 @@ function! <SID>StripTrailingWhitespaces()
 endfunction
 autocmd BufLeave *.py,*.js :call <SID>StripTrailingWhitespaces()
 
+autocmd BufNewFile,BufRead python inoremap <CR> <CR>x<BS>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGIN CONFIGURATION
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
