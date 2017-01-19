@@ -1,7 +1,7 @@
 " TODO Folding format/python
-" TODO Variable highlighting whe cursor hovers
 " TODO stop reload file ermsg
 " TODO Nicer error messages
+" TODO Auto bracket
 
 " Pathogen
 execute pathogen#infect()
@@ -17,9 +17,9 @@ set hidden
 " Our holy leader
 let mapleader = "\<Space>"
 " Source when saved
-if has("autocmd")
-  autocmd bufwritepost .vimrc :so $MYVIMRC
-endif
+" if has("autocmd")
+  " autocmd bufwritepost .vimrc :so $MYVIMRC
+" endif
 " When the page starts to scroll, keep the cursor 8 lines from the top and 8 lines from the bottom
 set scrolloff=8
 " Keyremapping
@@ -146,6 +146,10 @@ nnoremap <Leader>i :!ptpython -i %<CR>
 nnoremap <Leader>td :!python3 -m doctest %<CR>
 nnoremap <Leader>tu :!python3 manage.py test %:h<CR>
 nnoremap <Leader>tf :!python3 manage.py test functional_tests<CR>
+" Auto bracket
+inoremap ( ()<Left>
+inoremap { {}<Left>
+inoremap [ []<Left>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CUSTOM FUNCITONS
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
