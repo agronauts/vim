@@ -1,8 +1,8 @@
 let g:netrw_dirhistmax  =10
 let g:netrw_dirhist_cnt =6
-let g:netrw_dirhist_1='/home/patrick/Python/violent'
-let g:netrw_dirhist_2='/var/spool/cron'
-let g:netrw_dirhist_3='/var/spool/cron/crontabs'
-let g:netrw_dirhist_4='/home/patrick'
-let g:netrw_dirhist_5='/home/patrick/Python/violent'
-let g:netrw_dirhist_6='/home/patrick/Python/bioinfomatics'
+let g:netrw_dirhist_1='/home/patrick/Python/nac'
+let g:netrw_dirhist_2='/home/patrick/Python/nac/nac'
+let g:netrw_dirhist_3='/home/patrick/Python/nac'
+let g:netrw_dirhist_4='/home/patrick/Python/nac/nac'
+let g:netrw_dirhist_5='/home/patrick/Python/nac'
+let g:netrw_dirhist_6='/home/patrick/Python/nac/nac'

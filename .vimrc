@@ -1,9 +1,9 @@
 " TODO Folding format/python
 " TODO stop reload file ermsg
 " TODO Nicer error messages
-" TODO Auto bracket
 
 " Pathogen
+let g:pathogen_disabled = ['jedi-vim']
 execute pathogen#infect()
 " Clean autocmds
 autocmd!
@@ -191,7 +191,8 @@ function! <SID>StripTrailingWhitespaces()
     let @/=_s
     call cursor(l, c)
 endfunction
-autocmd BufLeave *.py,*.js :call <SID>StripTrailingWhitespaces()
+" autocmd BufLeave *.py,*.js :call <SID>StripTrailingWhitespaces() " Triggered
+" by pymode
 
 " Preserve whitespace of new lines
 autocmd BufNewFile,BufRead python inoremap <CR> <CR>x<BS>
